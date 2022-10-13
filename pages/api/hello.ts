@@ -1,13 +1,23 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type Data = {
-  name: string
-}
+const users: any[] = []
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  if (req.method === "POST") {
+
+    if (users.find((user) => user.email === req.body.email)) {
+      return res.status(400).send("Email already registered!")
+    }
+
+    res.status(200).send(req.body)
+    users.push(req.body)
+  }
+
+  if (req.method === "GET") {
+    return res.status(200).send({data: users})
+  }
 }
